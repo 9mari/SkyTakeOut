@@ -4,6 +4,7 @@ import com.sky.constant.JwtClaimsConstant;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.PasswordConstant;
 import com.sky.constant.StatusConstant;
+import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.entity.Employee;
@@ -64,12 +65,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
-    //TODO 暂时用来获取ID
-    @Autowired
-    private HttpServletRequest httpServletRequest;
-    @Autowired
-    private JwtProperties jwtProperties;
-
     @Override
     public void addEmp(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
@@ -81,13 +76,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
         //帐号状态
         employee.setStatus(StatusConstant.ENABLE);
-
-        // TODO 以后需要修改获取ID
-        String token = httpServletRequest.getHeader("token");
-        Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
-        Long empID = claims.get(JwtClaimsConstant.EMP_ID, Long.class);
-        employee.setCreateUser(empID);
-        employee.setUpdateUser(empID);
+        employee.setCreateUser(BaseContext.getCurrentId());
+        employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.addEmp(employee);
     }
 
