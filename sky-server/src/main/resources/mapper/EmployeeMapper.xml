@@ -8,4 +8,12 @@
         VALUES (#{name}, #{username}, #{password}, #{phone}, #{sex}, #{idNumber}, #{status}, #{createTime},
                 #{updateTime}, #{createUser}, #{updateUser})
     </insert>
+    <select id="find" resultType="com.sky.entity.Employee">
+        select id, name, username, password, phone, sex, id_number, status, create_time, update_time, create_user, update_user from employee
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
 </mapper>
