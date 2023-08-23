@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin/common")
@@ -18,7 +19,8 @@ public class UploadController {
     private AliOssUtil aliOssUtil;
 
     @PostMapping("/upload")
-    public Result<String> upload(@RequestBody MultipartFile multipartFile) throws IOException {
-        return Result.success(aliOssUtil.upload(multipartFile.getBytes(),multipartFile.getName()));
+    public Result<String> upload(MultipartFile file) throws IOException {
+        String url = aliOssUtil.upload(file.getBytes(), file.getOriginalFilename());
+        return Result.success(url);
     }
 }

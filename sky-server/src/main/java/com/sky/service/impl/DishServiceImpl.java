@@ -14,6 +14,8 @@ import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetMealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
+import com.sky.vo.DishVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +37,7 @@ public class DishServiceImpl implements DishService {
     @Override
     public PageResult page(DishPageQueryDTO dishPageQueryDTO) {
         PageHelper.startPage(dishPageQueryDTO.getPage(),dishPageQueryDTO.getPageSize());
-        Page<Dish> list = dishMapper.pageQuery(dishPageQueryDTO);
+        Page<DishVO> list = dishMapper.pageQuery(dishPageQueryDTO);
         return new PageResult(list.getTotal(),list.getResult());
     }
 
@@ -58,10 +60,11 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public void save(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO,dish);
+        dishMapper.insert(dish);
         List<DishFlavor> flavors = dishDTO.getFlavors();
-        for (DishFlavor flavor : flavors) {
-            dishFlavorMapper.insert(flavor);
-        }
-        dishMapper.insert(dishDTO);
+        flavors.forEach(dishFlavor -> dishFlavor.setDishId(dish.getId()));
+        dishFlavorMapper.insertBatch(flavors);
     }
 }

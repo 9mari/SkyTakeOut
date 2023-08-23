@@ -32,7 +32,8 @@ public class DishController {
     }
 
 
-    public Result<String> save(DishDTO dishDTO){
+    @PostMapping
+    public Result<String> save(@RequestBody DishDTO dishDTO){
         dishService.save(dishDTO);
         return Result.success();
     }

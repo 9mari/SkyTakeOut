@@ -16,9 +16,9 @@
                update_user
         from dish
     </sql>
-    <insert id="insert">
-        insert into dish(id, name, category_id, price, image, description, status, create_time, update_time, create_user, update_user)
-         VALUES (#{id},#{name},#{categoryId},#{price},#{image},#{description},#{status},#{createTime},#{updateTime},#{createUser},#{updateUser})
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into dish(name, category_id, price, image, description, status, create_time, update_time, create_user, update_user)
+         VALUES (#{name},#{categoryId},#{price},#{image},#{description},#{status},#{createTime},#{updateTime},#{createUser},#{updateUser})
     </insert>
 
     <delete id="delete">
@@ -28,19 +28,20 @@
         </foreach>
     </delete>
 
-    <select id="pageQuery" resultType="com.sky.entity.Dish">
-        <include refid="showInfo"/>
+    <select id="pageQuery" resultType="com.sky.vo.DishVO">
+        select d.* , c.name as categoryName from dish d left join category c on d.category_id = c.id
         <where>
             <if test="name != null and name != ''">
                 and name like concat('%',#{name},'%')
             </if>
-            <if test="categoryId">
+            <if test="categoryId != null">
                 and category_id = #{categoryId}
             </if>
-            <if test="status">
+            <if test="status != null">
                 and status = #{status}
             </if>
         </where>
+        order by d.create_time desc
     </select>
 
     <select id="getByIds" resultType="com.sky.entity.Dish">

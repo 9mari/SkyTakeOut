@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import java.io.ByteArrayInputStream;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -23,10 +24,12 @@ public class AliOssUtil {
      * 文件上传
      *
      * @param bytes
-     * @param objectName
+     * @param name
      * @return
      */
-    public String upload(byte[] bytes, String objectName) {
+    public String upload(byte[] bytes, String name) {
+        String suffix = name.substring(name.lastIndexOf("."));
+        String objectName = UUID.randomUUID()+suffix;
 
         // 创建OSSClient实例。
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
