@@ -18,4 +18,6 @@ public interface EmployeeService {
     void addEmp(EmployeeDTO employeeDTO);
 
     PageResult find(EmployeePageQueryDTO employeePageQueryDTO);
+
+    void enOrDis(Integer status, Long id);
 }

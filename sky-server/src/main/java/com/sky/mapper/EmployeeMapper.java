@@ -18,7 +18,9 @@ public interface EmployeeMapper {
     @Select("select * from employee where username = #{username}")
     Employee getByUsername(String username);
 
-    void addEmp(Employee employee);
+    void insert(Employee employee);
 
     List<Employee> find(EmployeePageQueryDTO employeePageQueryDTO);
+
+    void update(Employee employee);
 }

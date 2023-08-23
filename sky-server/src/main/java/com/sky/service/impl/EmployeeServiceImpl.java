@@ -83,7 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setStatus(StatusConstant.ENABLE);
         employee.setCreateUser(BaseContext.getCurrentId());
         employee.setUpdateUser(BaseContext.getCurrentId());
-        employeeMapper.addEmp(employee);
+        employeeMapper.insert(employee);
     }
 
     @Override
@@ -93,4 +93,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         return new PageResult(list.getTotal(),list.getResult());
     }
 
+    @Override
+    public void enOrDis(Integer status, Long id) {
+        Employee employee = Employee.builder().status(status).id(id).updateTime(LocalDateTime.now()).updateUser(BaseContext.getCurrentId()).build();
+        employeeMapper.update(employee);
+    }
 }

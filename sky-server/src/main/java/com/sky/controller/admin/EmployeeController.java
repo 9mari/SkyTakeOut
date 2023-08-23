@@ -68,7 +68,7 @@ public class EmployeeController {
      * @return
     */
     @PostMapping()
-    public Result<String> addEmp(@RequestBody EmployeeDTO employeeDTO) {
+    public Result addEmp(@RequestBody EmployeeDTO employeeDTO) {
         employeeService.addEmp(employeeDTO);
         return Result.success();
     }
@@ -93,6 +93,20 @@ public class EmployeeController {
      */
     @PostMapping("/logout")
     public Result<String> logout() {
+        return Result.success();
+    }
+
+
+    /**
+     * 修改帐号状态
+     *
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public Result enOrDis(@PathVariable Integer status,Long id){
+        employeeService.enOrDis(status,id);
         return Result.success();
     }
 
