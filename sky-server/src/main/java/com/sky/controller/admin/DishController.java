@@ -33,6 +33,12 @@ public class DishController {
     }
 
 
+    /**
+     * 新增
+     *
+     * @param dishDTO
+     * @return
+     */
     @PostMapping
     public Result<String> save(@RequestBody DishDTO dishDTO){
         dishService.save(dishDTO);
