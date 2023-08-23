@@ -64,7 +64,19 @@ public class DishServiceImpl implements DishService {
         BeanUtils.copyProperties(dishDTO,dish);
         dishMapper.insert(dish);
         List<DishFlavor> flavors = dishDTO.getFlavors();
-        flavors.forEach(dishFlavor -> dishFlavor.setDishId(dish.getId()));
-        dishFlavorMapper.insertBatch(flavors);
+        if (flavors != null && !flavors.isEmpty()){
+            flavors.forEach(dishFlavor -> dishFlavor.setDishId(dish.getId()));
+            dishFlavorMapper.insertBatch(flavors);
+        }
+    }
+
+    @Override
+    public DishVO getById(Integer id) {
+        DishVO dishVO = dishMapper.getById(id);
+        List<DishFlavor> flavors = dishFlavorMapper.getByDishId(id);
+        if (flavors != null && !flavors.isEmpty()){
+            dishVO.setFlavors(flavors);
+        }
+        return dishVO;
     }
 }

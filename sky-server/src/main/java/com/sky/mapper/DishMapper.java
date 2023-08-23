@@ -32,4 +32,6 @@ public interface DishMapper {
 
     @AutoFillAnnotation(value = OperationType.INSERT)
     void insert(Dish dish);
+
+    DishVO getById(Integer id);
 }

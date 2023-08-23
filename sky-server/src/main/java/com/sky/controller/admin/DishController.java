@@ -8,6 +8,7 @@ import com.sky.mapper.DishMapper;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
+import com.sky.vo.DishVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,4 +51,12 @@ public class DishController {
         dishService.delete(ids);
         return Result.success();
     }
+
+    @GetMapping("/{id}")
+    public Result<DishVO> getById(@PathVariable Integer id){
+        DishVO dishVO = dishService.getById(id);
+        return Result.success(dishVO);
+    }
+
+
 }
