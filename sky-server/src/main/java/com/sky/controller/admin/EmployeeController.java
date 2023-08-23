@@ -76,7 +76,7 @@ public class EmployeeController {
     /**
     * 页码查询
     * @param employeePageQueryDTO
-    * @return PageResult
+    * @return
     *
      */
 
@@ -107,6 +107,30 @@ public class EmployeeController {
     @PostMapping("/status/{status}")
     public Result enOrDis(@PathVariable Integer status,Long id){
         employeeService.enOrDis(status,id);
+        return Result.success();
+    }
+
+    /**
+     * 回显员工信息
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public Result<Employee> getById(@PathVariable Long id){
+        return Result.success(employeeService.getById(id));
+    }
+
+
+    /**
+     * 修改员工信息
+     *
+     * @param employeeDTO
+     * @return
+     */
+    @PutMapping
+    public Result update(@RequestBody EmployeeDTO employeeDTO){
+        employeeService.update(employeeDTO);
         return Result.success();
     }
 
