@@ -68,7 +68,7 @@ public class EmployeeController {
      * @return
     */
     @PostMapping()
-    public Result addEmp(@RequestBody EmployeeDTO employeeDTO) {
+    public Result<String> addEmp(@RequestBody EmployeeDTO employeeDTO) {
         employeeService.addEmp(employeeDTO);
         return Result.success();
     }
@@ -105,7 +105,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/status/{status}")
-    public Result enOrDis(@PathVariable Integer status,Long id){
+    public Result<String> enOrDis(@PathVariable Integer status,Long id){
         employeeService.enOrDis(status,id);
         return Result.success();
     }
@@ -129,7 +129,7 @@ public class EmployeeController {
      * @return
      */
     @PutMapping
-    public Result update(@RequestBody EmployeeDTO employeeDTO){
+    public Result<String> update(@RequestBody EmployeeDTO employeeDTO){
         employeeService.update(employeeDTO);
         return Result.success();
     }
