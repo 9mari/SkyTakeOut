@@ -1,6 +1,6 @@
 package com.sky.aspect;
 
-import com.sky.annotation.AutoFillAnnotation;
+import com.sky.annotation.AutoFill;
 import com.sky.constant.AutoFillConstant;
 import com.sky.context.BaseContext;
 import com.sky.enumeration.OperationType;
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Component
 public class AutoFillAspect {
 
-    @Pointcut("execution(* com.sky.mapper.*.* (..)) && @annotation(com.sky.annotation.AutoFillAnnotation)")
+    @Pointcut("execution(* com.sky.mapper.*.* (..)) && @annotation(com.sky.annotation.AutoFill)")
     public void autoFillPointcut(){}
 
     @Before("autoFillPointcut()")
@@ -27,7 +27,7 @@ public class AutoFillAspect {
         //获取方法签名，method是signature的实现类提供了更多详细的方法
         MethodSignature signature = (MethodSignature) joinpoint.getSignature();
         //获取方法上的注解
-        AutoFillAnnotation annotation = signature.getMethod().getAnnotation(AutoFillAnnotation.class);
+        AutoFill annotation = signature.getMethod().getAnnotation(AutoFill.class);
         //获取方法的入参否则无法修改
         Object[] args = joinpoint.getArgs();
         Object arg = args[0];
