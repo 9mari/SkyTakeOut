@@ -30,4 +30,7 @@ public interface SetMealMapper {
     void insert(Setmeal setmeal);
 
     SetmealVO getById(Long id);
+
+    @AutoFill(OperationType.UPDATE)
+    void update(Setmeal setmeal);
 }

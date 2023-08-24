@@ -34,4 +34,10 @@ public class SetMealController {
         SetmealVO setmealVO = setMealService.getById(id);
         return Result.success(setmealVO);
     }
+
+    @PutMapping
+    public Result<String> update(@RequestBody SetmealDTO setmealDTO){
+        setMealService.update(setmealDTO);
+        return Result.success();
+    }
 }

@@ -6,6 +6,9 @@
         insert into setmeal_dish(setmeal_id, dish_id, name, price, copies)
         VALUES (#{setmealId},#{dishId},#{name},#{price},#{copies})
     </insert>
+    <delete id="deleteBySetMealID">
+        delete from setmeal_dish where setmeal_id = #{id}
+    </delete>
 
     <select id="getBySetMealId" resultType="com.sky.entity.SetmealDish">
         select id, setmeal_id, dish_id, name, price, copies
