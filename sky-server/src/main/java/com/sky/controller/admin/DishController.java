@@ -78,8 +78,8 @@ public class DishController {
 
     @GetMapping("/list")
     public Result<List<Dish>> getByCategoryId(Long categoryId){
-//        dishService.getByCategoryId(){};
-        return Result.success();
+        List<Dish> dishes = dishService.getByCategoryId(categoryId);
+        return Result.success(dishes);
     }
 
 

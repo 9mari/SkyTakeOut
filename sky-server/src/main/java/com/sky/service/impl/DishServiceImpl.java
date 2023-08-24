@@ -19,6 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class DishServiceImpl implements DishService {
             }
         }
         List<Long> list = setmealMapper.getSetMealByDishIds(ids);
-        if (list != null && !list.isEmpty()){
+        if (!CollectionUtils.isEmpty(list)){
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
         dishMapper.delete(ids);
@@ -59,12 +60,13 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
+    @Transactional
     public void save(DishDTO dishDTO) {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO,dish);
         dishMapper.insert(dish);
         List<DishFlavor> flavors = dishDTO.getFlavors();
-        if (flavors != null && !flavors.isEmpty()){
+        if (!CollectionUtils.isEmpty(flavors)){
             flavors.forEach(dishFlavor -> dishFlavor.setDishId(dish.getId()));
             dishFlavorMapper.insertBatch(flavors);
         }
@@ -74,20 +76,21 @@ public class DishServiceImpl implements DishService {
     public DishVO getById(Integer id) {
         DishVO dishVO = dishMapper.getById(id);
         List<DishFlavor> flavors = dishFlavorMapper.getByDishId(id);
-        if (flavors != null && !flavors.isEmpty()){
+        if (!CollectionUtils.isEmpty(flavors)){
             dishVO.setFlavors(flavors);
         }
         return dishVO;
     }
 
     @Override
+    @Transactional
     public void update(DishDTO dishDTO) {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO,dish);
         dishMapper.update(dish);
         dishFlavorMapper.deleteByDishId(dish.getId());
         List<DishFlavor> flavors = dishDTO.getFlavors();
-        if (flavors != null && !flavors.isEmpty()){
+        if (!CollectionUtils.isEmpty(flavors)){
             flavors.forEach(dishFlavor -> dishFlavor.setDishId(dish.getId()));
             dishFlavorMapper.insertBatch(flavors);
         }
@@ -97,5 +100,10 @@ public class DishServiceImpl implements DishService {
     public void enOrDis(Integer status, Long id) {
         Dish dish = Dish.builder().status(status).id(id).build();
         dishMapper.update(dish);
+    }
+
+    @Override
+    public List<Dish> getByCategoryId(Long categoryId) {
+        return dishMapper.getByCategoryId(categoryId);
     }
 }
