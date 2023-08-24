@@ -33,4 +33,7 @@ public interface DishMapper {
     void insert(Dish dish);
 
     DishVO getById(Integer id);
+
+    @AutoFill(value = OperationType.UPDATE)
+    void update(Dish dish);
 }

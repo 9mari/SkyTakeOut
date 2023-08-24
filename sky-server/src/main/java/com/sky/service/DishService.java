@@ -16,4 +16,8 @@ public interface DishService {
     void save(DishDTO dishDTO);
 
     DishVO getById(Integer id);
+
+    void update(DishDTO dishDTO);
+
+    void enOrDis(Integer status, Long id);
 }

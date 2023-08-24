@@ -64,5 +64,23 @@ public class DishController {
         return Result.success(dishVO);
     }
 
+    @PutMapping
+    public Result<String> update(@RequestBody DishDTO dishDTO){
+        dishService.update(dishDTO);
+        return Result.success();
+    }
+
+    @PostMapping("/status/{status}")
+    public Result<String> enOrDis(@PathVariable Integer status,Long id){
+        dishService.enOrDis(status,id);
+        return Result.success();
+    }
+
+    @GetMapping("/list")
+    public Result<List<Dish>> getByCategoryId(Long categoryId){
+//        dishService.getByCategoryId(){};
+        return Result.success();
+    }
+
 
 }

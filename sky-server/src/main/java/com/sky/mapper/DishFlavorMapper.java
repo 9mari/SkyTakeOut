@@ -7,11 +7,13 @@ import java.util.List;
 
 @Mapper
 public interface DishFlavorMapper {
-    void delete(List<Long> ids);
+    void deleteByDishIds(List<Long> ids);
 
     void insert(DishFlavor flavor);
 
     void insertBatch(List<DishFlavor> flavors);
 
     List<DishFlavor> getByDishId(Integer id);
+
+    void deleteByDishId(Long id);
 }
