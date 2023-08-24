@@ -33,4 +33,8 @@ public interface SetMealMapper {
 
     @AutoFill(OperationType.UPDATE)
     void update(Setmeal setmeal);
+
+    void delete(List<Integer> ids);
+
+    List<Setmeal> getByIds(List<Integer> ids);
 }

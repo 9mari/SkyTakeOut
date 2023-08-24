@@ -9,10 +9,18 @@
     <delete id="deleteBySetMealID">
         delete from setmeal_dish where setmeal_id = #{id}
     </delete>
+    <delete id="deleteBySetMealIDs">
+        delete from setmeal_dish where setmeal_id in <foreach collection="ids" open="(" separator="," close=")" item="id">
+        #{id}
+    </foreach>
+    </delete>
 
     <select id="getBySetMealId" resultType="com.sky.entity.SetmealDish">
         select id, setmeal_id, dish_id, name, price, copies
         from setmeal_dish
         where setmeal_id = #{id};
+    </select>
+    <select id="getDishID" resultType="java.lang.Long">
+        select dish_id from setmeal_dish where setmeal_id = #{id}
     </select>
 </mapper>

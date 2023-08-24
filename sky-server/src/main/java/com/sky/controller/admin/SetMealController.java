@@ -7,8 +7,11 @@ import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.SetMealService;
 import com.sky.vo.SetmealVO;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/setmeal")
@@ -38,6 +41,18 @@ public class SetMealController {
     @PutMapping
     public Result<String> update(@RequestBody SetmealDTO setmealDTO){
         setMealService.update(setmealDTO);
+        return Result.success();
+    }
+
+    @PostMapping("/status/{status}")
+    public Result<String> enOrDis(@PathVariable Integer status,@RequestParam Long id){
+        setMealService.enOrDis(status,id);
+        return Result.success();
+    }
+
+    @DeleteMapping
+    public Result<String> delete(@RequestParam List<Integer> ids){
+        setMealService.delete(ids);
         return Result.success();
     }
 }
