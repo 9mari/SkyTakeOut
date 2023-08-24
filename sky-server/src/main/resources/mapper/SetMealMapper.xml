@@ -9,4 +9,7 @@
             #{id}
         </foreach>
     </select>
+    <select id="page" resultType="com.sky.vo.SetmealVO">
+        select s.* ,c.name categoryName from setmeal s left join category c on c.id = s.category_id
+    </select>
 </mapper>

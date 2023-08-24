@@ -28,7 +28,7 @@ public class DishController {
      * @return
      */
     @GetMapping("/page")
-    public Result<PageResult> Page(DishPageQueryDTO dishPageQueryDTO){
+    public Result<PageResult> page(DishPageQueryDTO dishPageQueryDTO){
         return Result.success(dishService.page(dishPageQueryDTO));
     }
 
