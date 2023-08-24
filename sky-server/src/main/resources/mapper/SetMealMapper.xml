@@ -44,13 +44,6 @@
             #{id}
         </foreach>
     </delete>
-
-    <select id="getSetMealByDishIds" resultType="java.lang.Long">
-        select id from setmeal_dish where dish_id in
-        <foreach collection="ids" open="(" separator="," close=")" item="id">
-            #{id}
-        </foreach>
-    </select>
     <select id="page" resultType="com.sky.vo.SetmealVO">
         select s.*, c.name categoryName
         from setmeal s

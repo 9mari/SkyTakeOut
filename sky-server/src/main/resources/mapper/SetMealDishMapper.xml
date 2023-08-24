@@ -15,6 +15,13 @@
     </foreach>
     </delete>
 
+    <select id="getSetMealByDishIds" resultType="java.lang.Long">
+        select id from setmeal_dish where dish_id in
+        <foreach collection="ids" open="(" separator="," close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
+
     <select id="getBySetMealId" resultType="com.sky.entity.SetmealDish">
         select id, setmeal_id, dish_id, name, price, copies
         from setmeal_dish

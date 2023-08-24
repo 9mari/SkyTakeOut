@@ -22,8 +22,6 @@ public interface SetMealMapper {
     @Select("select count(id) from setmeal where category_id = #{categoryId}")
     Integer countByCategoryId(Long id);
 
-    List<Long> getSetMealByDishIds(List<Long> ids);
-
     List<SetmealVO> page(SetmealPageQueryDTO setmealPageQueryDTO);
 
     @AutoFill(OperationType.INSERT)

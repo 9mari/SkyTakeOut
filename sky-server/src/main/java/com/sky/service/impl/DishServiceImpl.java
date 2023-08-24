@@ -11,6 +11,7 @@ import com.sky.entity.DishFlavor;
 import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
+import com.sky.mapper.SetMealDishMapper;
 import com.sky.mapper.SetMealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
@@ -33,7 +34,7 @@ public class DishServiceImpl implements DishService {
     private DishFlavorMapper dishFlavorMapper;
 
     @Autowired
-    private SetMealMapper setmealMapper;
+    private SetMealDishMapper setMealDishMapper;
 
     @Override
     public PageResult page(DishPageQueryDTO dishPageQueryDTO) {
@@ -51,7 +52,7 @@ public class DishServiceImpl implements DishService {
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
         }
-        List<Long> list = setmealMapper.getSetMealByDishIds(ids);
+        List<Long> list = setMealDishMapper.getSetMealByDishIds(ids);
         if (!CollectionUtils.isEmpty(list)){
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
