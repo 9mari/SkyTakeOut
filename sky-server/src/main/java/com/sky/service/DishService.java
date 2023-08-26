@@ -16,11 +16,18 @@ public interface DishService {
 
     void save(DishDTO dishDTO);
 
-    DishVO getById(Integer id);
+    DishVO getById(Long id);
 
     void update(DishDTO dishDTO);
 
     void enOrDis(Integer status, Long id);
 
     List<Dish> getByCategoryId(Long categoryId);
+
+    /**
+     * 条件查询菜品和口味
+     * @param dish
+     * @return
+     */
+    List<DishVO> listWithFlavor(Dish dish);
 }

@@ -13,7 +13,7 @@ public interface DishFlavorMapper {
 
     void insertBatch(List<DishFlavor> flavors);
 
-    List<DishFlavor> getByDishId(Integer id);
+    List<DishFlavor> getByDishId(Long id);
 
     void deleteByDishId(Long id);
 }

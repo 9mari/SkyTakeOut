@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/admin/user")
+@RequestMapping("/user/shop")
 @RestController("userShopController")
 public class ShopController {
 

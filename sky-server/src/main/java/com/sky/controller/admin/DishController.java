@@ -59,7 +59,7 @@ public class DishController {
     }
 
     @GetMapping("/{id}")
-    public Result<DishVO> getById(@PathVariable Integer id){
+    public Result<DishVO> getById(@PathVariable Long id){
         DishVO dishVO = dishService.getById(id);
         return Result.success(dishVO);
     }

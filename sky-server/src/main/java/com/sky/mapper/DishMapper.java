@@ -32,10 +32,10 @@ public interface DishMapper {
     @AutoFill(value = OperationType.INSERT)
     void insert(Dish dish);
 
-    DishVO getById(Integer id);
+    DishVO getById(Long id);
 
     @AutoFill(value = OperationType.UPDATE)
     void update(Dish dish);
 
-    List<Dish> getByCategoryId(Long categoryId);
+    List<Dish> getByCategoryId(Dish dish);
 }
