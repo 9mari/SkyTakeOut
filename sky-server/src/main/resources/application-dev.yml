@@ -16,3 +16,8 @@ sky:
     port: 6379
     password: root
     database: 0
+  wechat:
+    appid: wx4fb499b50278528a
+    secret: d5984cf6662e7ba9596ea23d45260646
+    grant-type: authorization_code
+    url: https://api.weixin.qq.com/sns/jscode2session
