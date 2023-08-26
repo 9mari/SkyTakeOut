@@ -27,7 +27,7 @@ public class SetMealController {
     }
 
     @PostMapping
-    public Result<String> save(@RequestBody SetmealDTO setmealDTO) {
+    public Result save(@RequestBody SetmealDTO setmealDTO) {
         setMealService.save(setmealDTO);
         return Result.success();
     }
@@ -39,19 +39,19 @@ public class SetMealController {
     }
 
     @PutMapping
-    public Result<String> update(@RequestBody SetmealDTO setmealDTO){
+    public Result update(@RequestBody SetmealDTO setmealDTO){
         setMealService.update(setmealDTO);
         return Result.success();
     }
 
     @PostMapping("/status/{status}")
-    public Result<String> enOrDis(@PathVariable Integer status,@RequestParam Long id){
+    public Result enOrDis(@PathVariable Integer status,@RequestParam Long id){
         setMealService.enOrDis(status,id);
         return Result.success();
     }
 
     @DeleteMapping
-    public Result<String> delete(@RequestParam List<Integer> ids){
+    public Result delete(@RequestParam List<Integer> ids){
         setMealService.delete(ids);
         return Result.success();
     }

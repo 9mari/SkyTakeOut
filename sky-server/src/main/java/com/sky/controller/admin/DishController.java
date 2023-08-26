@@ -40,7 +40,7 @@ public class DishController {
      * @return
      */
     @PostMapping
-    public Result<String> save(@RequestBody DishDTO dishDTO){
+    public Result save(@RequestBody DishDTO dishDTO){
         dishService.save(dishDTO);
         return Result.success();
     }
@@ -53,7 +53,7 @@ public class DishController {
      * @return
      */
     @DeleteMapping
-    public Result<String> delete(@RequestParam List<Long> ids){
+    public Result delete(@RequestParam List<Long> ids){
         dishService.delete(ids);
         return Result.success();
     }
@@ -65,13 +65,13 @@ public class DishController {
     }
 
     @PutMapping
-    public Result<String> update(@RequestBody DishDTO dishDTO){
+    public Result update(@RequestBody DishDTO dishDTO){
         dishService.update(dishDTO);
         return Result.success();
     }
 
     @PostMapping("/status/{status}")
-    public Result<String> enOrDis(@PathVariable Integer status,Long id){
+    public Result enOrDis(@PathVariable Integer status,Long id){
         dishService.enOrDis(status,id);
         return Result.success();
     }
