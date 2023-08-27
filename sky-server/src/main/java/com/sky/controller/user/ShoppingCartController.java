@@ -51,4 +51,11 @@ public class ShoppingCartController {
     public Result<List<ShoppingCart>> list(){
         return Result.success(shoppingCartService.list());
     }
+
+    @DeleteMapping("/clean")
+    public Result delete(){
+        shoppingCartService.delete();
+        cleanCache(UserConstant.REDIS_USER_KEY+BaseContext.getCurrentId());
+        return Result.success();
+    }
 }

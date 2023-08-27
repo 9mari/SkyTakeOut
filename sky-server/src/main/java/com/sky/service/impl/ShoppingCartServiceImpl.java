@@ -113,4 +113,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         valueOperations.set(key,list);
         return list;
     }
+
+    @Override
+    public void delete() {
+        Long userID = BaseContext.getCurrentId();
+        shoppingCartMapper.delete(userID);
+    }
 }
