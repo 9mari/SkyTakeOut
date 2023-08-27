@@ -12,8 +12,8 @@ public class WeChatProperties {
 
     private String appid; //小程序的appid
     private String secret; //小程序的秘钥
-    private String grantType;
-    private String url;
+    private String grantType; //登录请求方式
+    private String url; //登录请求接口
     private String mchid; //商户号
     private String mchSerialNo; //商户API证书的证书序列号
     private String privateKeyFilePath; //商户私钥文件
