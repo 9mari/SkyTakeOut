@@ -10,6 +10,7 @@ import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetMealDishMapper;
 import com.sky.mapper.SetMealMapper;
 import com.sky.mapper.ShoppingCartMapper;
+import com.sky.result.Result;
 import com.sky.service.ShoppingCartService;
 import com.sky.vo.DishVO;
 import com.sky.vo.SetmealVO;
@@ -97,5 +98,19 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             shoppingCart.setCreateTime(LocalDateTime.now());
             shoppingCartMapper.insert(shoppingCart);
         }
+    }
+
+    @Override
+    public List<ShoppingCart> list() {
+        Long userID = BaseContext.getCurrentId();
+        String key = UserConstant.REDIS_USER_KEY+userID;
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        List<ShoppingCart> list = (List<ShoppingCart>)valueOperations.get(key);
+        if (!CollectionUtils.isEmpty(list)){
+            return list;
+        }
+        list = shoppingCartMapper.list(ShoppingCart.builder().userId(userID).build());
+        valueOperations.set(key,list);
+        return list;
     }
 }

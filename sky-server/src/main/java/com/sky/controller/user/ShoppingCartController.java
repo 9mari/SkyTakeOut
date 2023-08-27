@@ -49,15 +49,6 @@ public class ShoppingCartController {
 
     @GetMapping("/list")
     public Result<List<ShoppingCart>> list(){
-        Long userID = BaseContext.getCurrentId();
-        String key = UserConstant.REDIS_USER_KEY+userID;
-        ValueOperations valueOperations = redisTemplate.opsForValue();
-        List<ShoppingCart> list = (List<ShoppingCart>)valueOperations.get(key);
-        if (!CollectionUtils.isEmpty(list)){
-            return Result.success(list);
-        }
-        list = shoppingCartMapper.list(ShoppingCart.builder().userId(userID).build());
-        valueOperations.set(key,list);
-        return Result.success(list);
+        return Result.success(shoppingCartService.list());
     }
 }
