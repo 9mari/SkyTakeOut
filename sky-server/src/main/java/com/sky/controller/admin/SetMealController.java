@@ -9,6 +9,7 @@ import com.sky.service.SetMealService;
 import com.sky.vo.SetmealVO;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class SetMealController {
     }
 
     @PostMapping
+    @CacheEvict(value = "setMealCache",key = "#setmealDTO.categoryId")
     public Result save(@RequestBody SetmealDTO setmealDTO) {
         setMealService.save(setmealDTO);
         return Result.success();
@@ -39,18 +41,21 @@ public class SetMealController {
     }
 
     @PutMapping
+    @CacheEvict(value = "setMealCache",allEntries = true)
     public Result update(@RequestBody SetmealDTO setmealDTO){
         setMealService.update(setmealDTO);
         return Result.success();
     }
 
     @PostMapping("/status/{status}")
+    @CacheEvict(value = "setMealCache",allEntries = true)
     public Result enOrDis(@PathVariable Integer status,@RequestParam Long id){
         setMealService.enOrDis(status,id);
         return Result.success();
     }
 
     @DeleteMapping
+    @CacheEvict(value = "setMealCache",allEntries = true)
     public Result delete(@RequestParam List<Integer> ids){
         setMealService.delete(ids);
         return Result.success();
