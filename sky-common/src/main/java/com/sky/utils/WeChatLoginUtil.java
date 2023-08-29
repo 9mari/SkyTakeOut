@@ -1,6 +1,7 @@
 package com.sky.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sky.constant.JwtClaimsConstant;
 import com.sky.constant.LoginConstant;
 import com.sky.constant.MessageConstant;
 import com.sky.exception.LoginFailedException;
@@ -14,6 +15,11 @@ import java.util.HashMap;
 
 @AllArgsConstructor
 public class WeChatLoginUtil {
+    public final static String APPID = "appid";
+    public final static String SECRET = "secret";
+    public final static String JS_CODE = "js_code";
+    public final static String GRANT_TYPE = "grant_type";
+    public final static String OPENID = "openid";
 
     private String appid;
     private String secret;
@@ -22,16 +28,13 @@ public class WeChatLoginUtil {
 
     public String login (String code){
         HashMap<String,String> map = new HashMap<>();
-        map.put(LoginConstant.APPID,appid);
-        map.put(LoginConstant.SECRET,secret);
-        map.put(LoginConstant.JS_CODE,code);
-        map.put(LoginConstant.GRANT_TYPE,grantType);
+        map.put(APPID,appid);
+        map.put(SECRET,secret);
+        map.put(JS_CODE,code);
+        map.put(GRANT_TYPE,grantType);
         String json = HttpClientUtil.doGet(url, map);
-        if(ObjectUtils.isEmpty(json)){
-            throw new LoginFailedException(MessageConstant.LOGIN_FAILED);
-        }
         JSONObject jsonObject = JSONObject.parseObject(json);
-        return jsonObject.getString("openid");
+        return jsonObject.getString(OPENID);
     }
 
 }
