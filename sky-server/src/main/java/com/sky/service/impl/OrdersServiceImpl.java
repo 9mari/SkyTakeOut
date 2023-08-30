@@ -14,6 +14,7 @@ import com.sky.mapper.AddressBookMapper;
 import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrdersMapper;
 import com.sky.service.OrdersService;
+import com.sky.utils.LBSYunUtil;
 import com.sky.vo.OrderSubmitVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     @Transactional
-    public OrderSubmitVO submit(OrdersSubmitDTO dto) {
+    public OrderSubmitVO submit(OrdersSubmitDTO dto) throws Exception {
         Long userID = BaseContext.getCurrentId();
         String key = UserConstant.REDIS_USER_KEY+userID;
         //获取购物车
@@ -53,6 +54,15 @@ public class OrdersServiceImpl implements OrdersService {
 
         //地址薄
         AddressBook addressBook = addressBookMapper.getById(dto.getAddressBookId());
+        StringBuilder stringBuilder = new StringBuilder();
+        String address = stringBuilder.append(addressBook.getProvinceName()).append(addressBook.getCityName()).append(addressBook.getDistrictName()).append(addressBook.getDetail()).toString();
+
+        String location = LBSYunUtil.parseAddress(address);
+        String distance = LBSYunUtil.distance(location);
+        if (Integer.valueOf(distance) > 5000){
+            throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_TOO_FAR);
+        }
+
         if (addressBook == null){
             throw new AddressBookBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
         }

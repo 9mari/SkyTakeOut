@@ -4,5 +4,5 @@ import com.sky.dto.OrdersSubmitDTO;
 import com.sky.vo.OrderSubmitVO;
 
 public interface OrdersService {
-    OrderSubmitVO submit(OrdersSubmitDTO dto);
+    OrderSubmitVO submit(OrdersSubmitDTO dto) throws Exception;
 }
