@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.sky.dto.HistoryOrdersDTO;
+import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
 import com.sky.vo.OrderVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,4 +22,8 @@ public interface OrdersMapper {
     Orders getByNumberAndUserId(String outTradeNo, Long userId);
 
     void update(Orders orders);
+
+    List<OrderVO> pageQuery (OrdersPageQueryDTO dto);
+
+    Integer selectStatus(Integer status);
 }
