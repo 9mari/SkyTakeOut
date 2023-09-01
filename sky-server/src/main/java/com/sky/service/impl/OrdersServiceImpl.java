@@ -1,21 +1,24 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.UserConstant;
 import com.sky.context.BaseContext;
+import com.sky.dto.HistoryOrdersDTO;
+import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
-import com.sky.entity.AddressBook;
-import com.sky.entity.OrderDetail;
-import com.sky.entity.Orders;
-import com.sky.entity.ShoppingCart;
+import com.sky.entity.*;
 import com.sky.exception.AddressBookBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
-import com.sky.mapper.AddressBookMapper;
-import com.sky.mapper.OrderDetailMapper;
-import com.sky.mapper.OrdersMapper;
+import com.sky.mapper.*;
+import com.sky.result.PageResult;
 import com.sky.service.OrdersService;
 import com.sky.utils.LBSYunUtil;
+import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +44,12 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Autowired
     private OrderDetailMapper orderDetailMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private ShoppingCartMapper shoppingCartMapper;
 
     @Override
     @Transactional
@@ -94,7 +104,24 @@ public class OrdersServiceImpl implements OrdersService {
         }
 
         orderDetailMapper.inserts(orderDetails);
-
+        shoppingCartMapper.delete(BaseContext.getCurrentId());
         return OrderSubmitVO.builder().id(orderId).orderNumber(number).orderTime(now).orderAmount(dto.getAmount()).build();
+    }
+
+    public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) {
+        // 当前登录用户id
+        Long userId = BaseContext.getCurrentId();
+        User user = userMapper.getByID(userId);
+        return new OrderPaymentVO();
+    }
+
+    @Override
+    public PageResult history(HistoryOrdersDTO historyOrdersDTO) {
+        historyOrdersDTO.setUserId(BaseContext.getCurrentId());
+        PageHelper.startPage(historyOrdersDTO.getPage(),historyOrdersDTO.getPageSize());
+        List<OrderVO> list = ordersMapper.getByUserID(historyOrdersDTO);
+        list.forEach(order -> order.setOrderDetailList(orderDetailMapper.getByOrderId(order.getId())));
+        Page<OrderVO> orders = (Page<OrderVO>) list;
+        return PageResult.builder().total(orders.getTotal()).records(orders.getResult()).build();
     }
 }
