@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -105,6 +106,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         orderDetailMapper.inserts(orderDetails);
         shoppingCartMapper.delete(BaseContext.getCurrentId());
+        redisTemplate.delete(key);
         return OrderSubmitVO.builder().id(orderId).orderNumber(number).orderTime(now).orderAmount(dto.getAmount()).build();
     }
 
@@ -115,13 +117,46 @@ public class OrdersServiceImpl implements OrdersService {
         return new OrderPaymentVO();
     }
 
+    public void paySuccess(String outTradeNo) {
+        // 当前登录用户id
+        Long userId = BaseContext.getCurrentId();
+
+        // 根据订单号查询当前用户的订单
+        Orders ordersDB = ordersMapper.getByNumberAndUserId(outTradeNo, userId);
+
+        // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
+        Orders orders = Orders.builder()
+                .id(ordersDB.getId())
+                .status(Orders.TO_BE_CONFIRMED)
+                .payStatus(Orders.PAID)
+                .checkoutTime(LocalDateTime.now())
+                .build();
+
+        ordersMapper.update(orders);
+    }
+
     @Override
     public PageResult history(HistoryOrdersDTO historyOrdersDTO) {
         historyOrdersDTO.setUserId(BaseContext.getCurrentId());
         PageHelper.startPage(historyOrdersDTO.getPage(),historyOrdersDTO.getPageSize());
         List<OrderVO> list = ordersMapper.getByUserID(historyOrdersDTO);
+        if (CollectionUtils.isEmpty(list)){
+            return PageResult.builder().build();
+        }
         list.forEach(order -> order.setOrderDetailList(orderDetailMapper.getByOrderId(order.getId())));
         Page<OrderVO> orders = (Page<OrderVO>) list;
         return PageResult.builder().total(orders.getTotal()).records(orders.getResult()).build();
+    }
+
+    @Override
+    public OrderVO selectById(Long id) {
+        OrderVO vo = ordersMapper.getByID(id);
+        vo.setOrderDetailList(orderDetailMapper.getByOrderId(vo.getId()));
+        return vo;
+    }
+
+    @Override
+    public void cancel(Long id) {
+
     }
 }

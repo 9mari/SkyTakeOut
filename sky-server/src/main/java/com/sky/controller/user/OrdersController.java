@@ -6,11 +6,15 @@ import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrdersService;
+import com.sky.utils.HttpClientUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 @RestController
 @Slf4j
@@ -30,6 +34,9 @@ public class OrdersController {
         log.info("订单支付：{}", ordersPaymentDTO);
         OrderPaymentVO orderPaymentVO = ordersService.payment(ordersPaymentDTO);
         log.info("生成预支付交易单：{}", orderPaymentVO);
+        HashMap<String,String> map = new HashMap<>();
+        map.put("number",ordersPaymentDTO.getOrderNumber());
+        HttpClientUtil.doGet("http://localhost:8080/notify/paySuccess",map);
         return Result.success(orderPaymentVO);
     }
 
@@ -37,5 +44,17 @@ public class OrdersController {
     public Result<PageResult> history(HistoryOrdersDTO historyOrdersDTO){
         PageResult history = ordersService.history(historyOrdersDTO);
         return Result.success(history);
+    }
+
+    @GetMapping("/orderDetail/{id}")
+    public Result<OrderVO> selectById(@PathVariable Long id){
+        OrderVO vo = ordersService.selectById(id);
+        return Result.success(vo);
+    }
+
+    @PutMapping("/cancel/{id}")
+    public Result cancel(@PathVariable Long id){
+        ordersService.cancel(id);
+        return Result.success();
     }
 }
