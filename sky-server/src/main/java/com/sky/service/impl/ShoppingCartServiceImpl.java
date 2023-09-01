@@ -39,7 +39,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private SetMealMapper setMealMapper;
 
     @Override
-    public void save(ShoppingCartDTO shoppingCartDTO) {
+    public void  save(ShoppingCartDTO shoppingCartDTO) {
         //线程获取id
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setUserId(BaseContext.getCurrentId());

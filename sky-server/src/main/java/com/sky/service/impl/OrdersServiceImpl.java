@@ -5,16 +5,14 @@ import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.UserConstant;
 import com.sky.context.BaseContext;
-import com.sky.dto.HistoryOrdersDTO;
-import com.sky.dto.OrdersPageQueryDTO;
-import com.sky.dto.OrdersPaymentDTO;
-import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.*;
 import com.sky.entity.*;
 import com.sky.exception.AddressBookBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
 import com.sky.result.PageResult;
 import com.sky.service.OrdersService;
+import com.sky.service.ShoppingCartService;
 import com.sky.utils.LBSYunUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
@@ -22,6 +20,7 @@ import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
+
     @Autowired
     private RedisTemplate redisTemplate;
 
@@ -141,7 +141,6 @@ public class OrdersServiceImpl implements OrdersService {
         PageHelper.startPage(dto.getPage(), dto.getPageSize());
         List<OrderVO> orders = ordersMapper.pageQuery(dto);
         if (!CollectionUtils.isEmpty(orders)) {
-            StringBuilder sb = new StringBuilder();
             for (OrderVO order : orders) {
                 order.setOrderDishes(orderDetailName(order));
             }
@@ -167,6 +166,26 @@ public class OrdersServiceImpl implements OrdersService {
         vo.setOrderDetailList(orderDetailMapper.getByOrderId(vo.getId()));
 //        vo.setOrderDishes(orderDetailName(vo));
         return vo;
+    }
+
+    @Override
+    public void updateStatus(OrdersConfirmDTO ordersConfirmDTO) {
+        Orders orders = new Orders();
+        BeanUtils.copyProperties(ordersConfirmDTO, orders);
+        ordersMapper.update(orders);
+    }
+
+    @Override
+    public void repetition(Long id) {
+        List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(id);
+        List<ShoppingCart> shoppingCartList = orderDetails.stream().map(orderDetail -> {
+            ShoppingCart shoppingCart = new ShoppingCart();
+            BeanUtils.copyProperties(orderDetail, shoppingCart, "id");
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            shoppingCart.setUserId(BaseContext.getCurrentId());
+            return shoppingCart;
+        }).collect(Collectors.toList());
+        shoppingCartMapper.insertBatch(shoppingCartList);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.sky.controller.admin;
 
+import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
+import com.sky.entity.Orders;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrdersService;
@@ -34,5 +36,24 @@ public class OrdersController {
     public Result<OrderVO> getOrder(@PathVariable Long id){
         OrderVO order = ordersService.getOrder(id);
         return Result.success(order);
+    }
+
+    @PutMapping("/confirm")
+    public Result confirm(@RequestBody OrdersConfirmDTO ordersConfirmDTO){
+        ordersConfirmDTO.setStatus(Orders.CONFIRMED);
+        ordersService.updateStatus(ordersConfirmDTO);
+        return Result.success();
+    }
+
+    @PutMapping("/delivery/{id}")
+    public Result delivery(@PathVariable Long id){
+        ordersService.updateStatus(OrdersConfirmDTO.builder().id(id).status(Orders.DELIVERY_IN_PROGRESS).build());
+        return Result.success();
+    }
+
+    @PutMapping("/complete/{id}")
+    public Result complete(@PathVariable Long id){
+        ordersService.updateStatus(OrdersConfirmDTO.builder().id(id).status(Orders.COMPLETED).build());
+        return Result.success();
     }
 }

@@ -54,6 +54,7 @@ public class ShoppingCartController {
 
     @DeleteMapping("/clean")
     public Result delete(){
+        log.info("/clean端口被请求");
         shoppingCartService.delete();
         cleanCache(UserConstant.REDIS_USER_KEY+BaseContext.getCurrentId());
         return Result.success();
