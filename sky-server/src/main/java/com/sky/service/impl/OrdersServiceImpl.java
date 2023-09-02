@@ -233,7 +233,7 @@ public class OrdersServiceImpl implements OrdersService {
         OrderVO vo = ordersMapper.getByID(id);
         Integer orderStatus = vo.getStatus();
         if (orderStatus.equals(Orders.PENDING_PAYMENT) || orderStatus.equals(Orders.TO_BE_CONFIRMED)) {
-            ordersMapper.update(Orders.builder().id(id).status(6).build());
+            ordersMapper.update(Orders.builder().id(id).status(Orders.CANCELLED).build());
         }
     }
 

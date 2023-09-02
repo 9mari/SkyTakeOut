@@ -21,4 +21,7 @@ public interface ShoppingCartMapper {
     void delete(Long userID);
 
     void insertBatch(List<ShoppingCart> shoppingCartList);
+
+    @Delete("delete from shopping_cart where id = #{id}")
+    void deleteById(Long id);
 }

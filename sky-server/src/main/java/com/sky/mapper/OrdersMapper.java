@@ -7,6 +7,7 @@ import com.sky.vo.OrderVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -26,4 +27,9 @@ public interface OrdersMapper {
     List<OrderVO> pageQuery (OrdersPageQueryDTO dto);
 
     Integer selectStatus(Integer status);
+
+    List<Orders> getUnpaidOrders();
+
+    @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
+    List<Orders> getByStatusAndOrdertimeLT(Integer status, LocalDateTime orderTime);
 }
