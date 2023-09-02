@@ -8,11 +8,11 @@ import com.sky.context.BaseContext;
 import com.sky.dto.*;
 import com.sky.entity.*;
 import com.sky.exception.AddressBookBusinessException;
+import com.sky.exception.OrderBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
 import com.sky.result.PageResult;
 import com.sky.service.OrdersService;
-import com.sky.service.ShoppingCartService;
 import com.sky.utils.LBSYunUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
@@ -20,7 +20,6 @@ import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +28,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -186,6 +186,26 @@ public class OrdersServiceImpl implements OrdersService {
             return shoppingCart;
         }).collect(Collectors.toList());
         shoppingCartMapper.insertBatch(shoppingCartList);
+    }
+
+    @Override
+    public void rejection(OrdersRejectionDTO ordersRejectionDTO) {
+        OrderVO orderVO = ordersMapper.getByID(ordersRejectionDTO.getId());
+        if (Objects.isNull(orderVO)||!(orderVO.getStatus().equals(Orders.TO_BE_CONFIRMED))){
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        Orders orders = Orders.builder().id(ordersRejectionDTO.getId()).status(Orders.CANCELLED).rejectionReason(ordersRejectionDTO.getRejectionReason()).build();
+        ordersMapper.update(orders);
+    }
+
+    @Override
+    public void adminCancel(OrdersCancelDTO ordersCancelDTO) {
+        OrderVO orderVO = ordersMapper.getByID(ordersCancelDTO.getId());
+        if (Objects.isNull(orderVO)||orderVO.getStatus().equals(Orders.COMPLETED)){
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+        Orders orders = Orders.builder().id(ordersCancelDTO.getId()).status(Orders.CANCELLED).cancelReason(ordersCancelDTO.getCancelReason()).build();
+        ordersMapper.update(orders);
     }
 
     @Override

@@ -29,4 +29,8 @@ public interface OrdersService {
     void updateStatus(OrdersConfirmDTO ordersConfirmDTO);
 
     void repetition(Long id);
+
+    void rejection(OrdersRejectionDTO ordersCancelDTO);
+
+    void adminCancel(OrdersCancelDTO ordersCancelDTO);
 }

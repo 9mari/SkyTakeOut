@@ -1,7 +1,9 @@
 package com.sky.controller.admin;
 
+import com.sky.dto.OrdersCancelDTO;
 import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
+import com.sky.dto.OrdersRejectionDTO;
 import com.sky.entity.Orders;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
@@ -54,6 +56,18 @@ public class OrdersController {
     @PutMapping("/complete/{id}")
     public Result complete(@PathVariable Long id){
         ordersService.updateStatus(OrdersConfirmDTO.builder().id(id).status(Orders.COMPLETED).build());
+        return Result.success();
+    }
+
+    @PutMapping("/rejection")
+    public Result rejection(@RequestBody OrdersRejectionDTO ordersRejectionDTO){
+        ordersService.rejection(ordersRejectionDTO);
+        return Result.success();
+    }
+
+    @PutMapping("/cancel")
+    public Result adminCancel(@RequestBody OrdersCancelDTO ordersCancelDTO){
+        ordersService.adminCancel(ordersCancelDTO);
         return Result.success();
     }
 }
