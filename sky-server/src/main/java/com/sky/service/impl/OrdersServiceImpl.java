@@ -1,9 +1,11 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.constant.UserConstant;
+import com.sky.constant.WebSocketConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.*;
 import com.sky.entity.*;
@@ -18,6 +20,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -27,6 +30,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -51,6 +55,9 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
+
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     @Override
     @Transactional
@@ -132,6 +139,11 @@ public class OrdersServiceImpl implements OrdersService {
                 .checkoutTime(LocalDateTime.now())
                 .build();
 
+        HashMap map = new HashMap<>();
+        map.put(WebSocketConstant.TYPE,1);
+        map.put(WebSocketConstant.ORDER_ID,orders.getId());
+        map.put(WebSocketConstant.CONTENT,WebSocketConstant.ORDER_NUMBER+outTradeNo);
+        webSocketServer.sendToAllClient(JSONObject.toJSONString(map));
         ordersMapper.update(orders);
     }
 
@@ -191,7 +203,7 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public void rejection(OrdersRejectionDTO ordersRejectionDTO) {
         OrderVO orderVO = ordersMapper.getByID(ordersRejectionDTO.getId());
-        if (Objects.isNull(orderVO)||!(orderVO.getStatus().equals(Orders.TO_BE_CONFIRMED))){
+        if (Objects.isNull(orderVO) || !(orderVO.getStatus().equals(Orders.TO_BE_CONFIRMED))) {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         }
         Orders orders = Orders.builder().id(ordersRejectionDTO.getId()).status(Orders.CANCELLED).rejectionReason(ordersRejectionDTO.getRejectionReason()).build();
@@ -201,11 +213,24 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public void adminCancel(OrdersCancelDTO ordersCancelDTO) {
         OrderVO orderVO = ordersMapper.getByID(ordersCancelDTO.getId());
-        if (Objects.isNull(orderVO)||orderVO.getStatus().equals(Orders.COMPLETED)){
+        if (Objects.isNull(orderVO) || orderVO.getStatus().equals(Orders.COMPLETED)) {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         }
         Orders orders = Orders.builder().id(ordersCancelDTO.getId()).status(Orders.CANCELLED).cancelReason(ordersCancelDTO.getCancelReason()).build();
         ordersMapper.update(orders);
+    }
+
+    @Override
+    public void reminder(Long id) {
+        OrderVO vo = ordersMapper.getByID(id);
+        if (Objects.isNull(vo)){
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        HashMap map = new HashMap<>();
+        map.put(WebSocketConstant.TYPE,2);
+        map.put(WebSocketConstant.ORDER_ID,id);
+        map.put(WebSocketConstant.CONTENT,WebSocketConstant.ORDER_NUMBER+vo.getNumber());
+        webSocketServer.sendToAllClient(JSONObject.toJSONString(map));
     }
 
     @Override
@@ -238,9 +263,11 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     private String orderDetailName(OrderVO order) {
-        StringBuilder sb = new StringBuilder();
         List<OrderDetail> list = orderDetailMapper.getByOrderId(order.getId());
-        List<String> stringList = list.stream().map(orderDetail -> sb.append(orderDetail.getName()).append("*").append(orderDetail.getNumber()).toString()).collect(Collectors.toList());
+        List<String> stringList = list.stream().map(orderDetail -> {
+            StringBuilder sb = new StringBuilder();
+            return sb.append(orderDetail.getName()).append("*").append(orderDetail.getNumber()).toString();
+        }).collect(Collectors.toList());
         return String.join(",", stringList);
     }
 }
