@@ -37,6 +37,7 @@ public class GlobalExceptionHandler {
             String msg = name + MessageConstant.ALREADY_EXISTS;
             return Result.error(msg);
         }
+        log.error("异常信息：{}", message);
         return Result.error(message);
     }
 
