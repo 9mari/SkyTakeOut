@@ -22,9 +22,9 @@ public class OrdersController {
     private OrdersService ordersService;
 
     @GetMapping("/conditionSearch")
-    public Result<PageResult> selectOrders(OrdersPageQueryDTO dto) {
+    public Result<PageResult> searchOrders(OrdersPageQueryDTO dto) {
         log.info("/conditionSearch分页查询");
-        PageResult pageResult = ordersService.selectOrders(dto);
+        PageResult pageResult = ordersService.searchOrders(dto);
         return Result.success(pageResult);
     }
 

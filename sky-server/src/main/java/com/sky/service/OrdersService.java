@@ -20,7 +20,7 @@ public interface OrdersService {
 
     void paySuccess(String outTradeNo);
 
-    PageResult selectOrders(OrdersPageQueryDTO dto);
+    PageResult searchOrders(OrdersPageQueryDTO dto);
 
     OrderStatisticsVO selectStatus();
 

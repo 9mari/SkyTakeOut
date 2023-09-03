@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -148,8 +149,7 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public PageResult selectOrders(OrdersPageQueryDTO dto) {
-        PageResult pageResult = new PageResult();
+    public PageResult searchOrders(OrdersPageQueryDTO dto) {
         PageHelper.startPage(dto.getPage(), dto.getPageSize());
         List<OrderVO> orders = ordersMapper.pageQuery(dto);
         if (!CollectionUtils.isEmpty(orders)) {
@@ -157,10 +157,10 @@ public class OrdersServiceImpl implements OrdersService {
                 order.setOrderDishes(orderDetailName(order));
             }
             Page<OrderVO> list = (Page<OrderVO>) orders;
-            pageResult.setTotal(list.getTotal());
-            pageResult.setRecords(list.getResult());
+            return PageResult.builder().total(list.getTotal()).records(list.getResult()).build();
+        }else {
+            return new PageResult();
         }
-        return pageResult;
     }
 
     @Override
@@ -266,7 +266,7 @@ public class OrdersServiceImpl implements OrdersService {
         List<OrderDetail> list = orderDetailMapper.getByOrderId(order.getId());
         List<String> stringList = list.stream().map(orderDetail -> {
             StringBuilder sb = new StringBuilder();
-            return sb.append(orderDetail.getName()).append("*").append(orderDetail.getNumber()).toString();
+            return sb.append(orderDetail.getName()).append(orderDetail.getDishFlavor() == null ? "":orderDetail.getDishFlavor()).append("*").append(orderDetail.getNumber()).toString();
         }).collect(Collectors.toList());
         return String.join(",", stringList);
     }
