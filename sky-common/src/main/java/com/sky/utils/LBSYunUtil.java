@@ -3,6 +3,7 @@ package com.sky.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -13,9 +14,11 @@ import java.util.regex.Pattern;
 public class LBSYunUtil {
 
     //修改为你自己的AK
-    private static final String LBS_AK = "ceuZtAhk0GuN8qO8VuRmYkCctqaCpezh";
+    @Value("${sky.lbs.ak}")
+    private static String LBS_AK;
     //修改为你自己的店铺地址，如果你不知道可以用parseAddress解析一次自己的店铺地址
-    private static final String SHOP_LOCATION = "41.791571,123.409284";
+    @Value("${sky.lbs.location}")
+    private static String SHOP_LOCATION;
 
 
     //匹配坐标截取6位的正则表达式

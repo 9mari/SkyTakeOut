@@ -184,6 +184,7 @@ public class OrdersServiceImpl implements OrdersService {
     public void updateStatus(OrdersConfirmDTO ordersConfirmDTO) {
         Orders orders = new Orders();
         BeanUtils.copyProperties(ordersConfirmDTO, orders);
+        orders.setDeliveryTime(LocalDateTime.now());
         ordersMapper.update(orders);
     }
 

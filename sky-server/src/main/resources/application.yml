@@ -56,3 +56,6 @@ sky:
     secret: ${sky.wechat.secret}
     grant-type: ${sky.wechat.grant-type}
     url: ${sky.wechat.url}
+  lbs:
+    ak: ${sky.lbs.ak}
+    location: ${sky.lbs.location}
